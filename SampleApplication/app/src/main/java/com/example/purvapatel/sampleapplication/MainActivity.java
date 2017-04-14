@@ -1,5 +1,6 @@
 package com.example.purvapatel.sampleapplication;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -24,6 +25,19 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.feedback);
+        fab.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+                //feedback form
+
+                Fragment fragmentFeedback = new Feedback();
+                FragmentTransaction ft =  getSupportFragmentManager().beginTransaction();
+                ft.replace(R.id.content_main,fragmentFeedback);
+                ft.commit();
+            }
+        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -83,7 +97,12 @@ public class MainActivity extends AppCompatActivity
                 fragment = new Chart();
                 break;
             case R.id.menu_share:
-                fragment = new Share();
+                Intent intent = new Intent(android.content.Intent.ACTION_SEND);
+                intent.setType("text/plain");
+                String shareBodyText = "Your shearing message goes here";
+                intent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Subject/Title");
+                intent.putExtra(android.content.Intent.EXTRA_TEXT, shareBodyText);
+                startActivity(Intent.createChooser(intent, "Choose sharing method"));
                 break;
             case R.id.menu_log:
                 fragment = new Log();

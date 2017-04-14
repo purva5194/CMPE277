@@ -13,6 +13,22 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="RatingBar" parent="Theme.AppCompat">
+        <item name="colorControlNormal">#C6C6C6</item>
+        <item name="colorControlActivated">#710F9F</item>
+    </style>
+
+    <style name="FeedbackButton" parent="Widget.AppCompat.Button.Colored">
+        <item name="colorButtonNormal">#710F9F</item>
+        <item name="android:textColor">#FFFFFF</item>
+    </style>
+
+    <style name="FeedbackFromText" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorControlNormal">#C6C6C6</item>
+        <item name="colorControlActivated">#710F9F</item>
+        <item name="colorControlHighlight">#710F9F</item>
+    </style>
+
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />

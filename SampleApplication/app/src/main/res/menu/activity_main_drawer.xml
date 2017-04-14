@@ -20,17 +20,13 @@
             android:title="Logs" />
         <item
             android:id="@+id/menu_setting"
-            android:icon="@drawable/ic_menu_setting"
-            android:title="Settings" />
-    </group>
+            android:icon="@drawable/ic_menu_user"
+            android:title="User Profile" />
 
-    <item android:title="Communicate">
-        <menu>
-            <item
-                android:id="@+id/menu_share"
-                android:icon="@drawable/ic_menu_share"
-                android:title="Share" />
-        </menu>
-    </item>
+        <item
+            android:id="@+id/menu_share"
+            android:icon="@drawable/ic_menu_share"
+            android:title="Share" />
+    </group>
 
 </menu>

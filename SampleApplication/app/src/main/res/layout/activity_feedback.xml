@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="20pt"/>
+
+    <android.support.v7.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content">
+
+        <View
+            android:layout_width="20pt"
+            android:layout_height="10pt"/>
+
+        <EditText
+            android:id="@+id/editText1"
+            android:layout_width="135pt"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:theme="@style/FeedbackFromText"
+            android:hint="Enter Name"
+            android:textColor="#710F9F"
+            android:inputType="textPersonName"
+            android:text="" />
+
+        <View
+            android:layout_width="20pt"
+            android:layout_height="10pt"/>
+    </android.support.v7.widget.LinearLayoutCompat>
+
+    <android.support.v7.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content">
+
+        <View
+            android:layout_width="20pt"
+            android:layout_height="10pt"/>
+
+        <EditText
+            android:id="@+id/editText2"
+            android:layout_width="135pt"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:hint="Enter Name"
+            android:theme="@style/FeedbackFromText"
+            android:textColor="#710F9F"
+            android:text="" />
+
+        <View
+            android:layout_width="20pt"
+            android:layout_height="10pt"/>
+
+    </android.support.v7.widget.LinearLayoutCompat>
+
+    <android.support.v7.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content">
+
+        <View
+            android:layout_width="20pt"
+            android:layout_height="10pt"/>
+
+        <EditText
+            android:id="@+id/editText3"
+            android:layout_width="135pt"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Enter Name"
+            android:textColor="#710F9F"
+            android:theme="@style/FeedbackFromText"
+            android:inputType="textPersonName"
+            android:text="" />
+
+        <View
+            android:layout_width="20pt"
+            android:layout_height="10pt"/>
+
+    </android.support.v7.widget.LinearLayoutCompat>
+
+    <android.support.v7.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content">
+
+        <View
+            android:layout_width="20pt"
+            android:layout_height="10pt"/>
+
+        <EditText
+            android:id="@+id/editText4"
+            android:layout_width="135pt"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Enter Name"
+            android:textColor="#710F9F"
+            android:theme="@style/FeedbackFromText"
+            android:inputType="textPersonName"
+            android:text="" />
+
+        <View
+            android:layout_width="20pt"
+            android:layout_height="10pt"/>
+
+    </android.support.v7.widget.LinearLayoutCompat>
+
+    <android.support.v7.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content">
+
+        <View
+            android:layout_width="20pt"
+            android:layout_height="10pt"/>
+
+        <EditText
+            android:id="@+id/editText5"
+            android:layout_width="135pt"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Enter Name"
+            android:theme="@style/FeedbackFromText"
+            android:textColor="#710F9F"
+            android:inputType="textPersonName"
+            android:text="" />
+
+        <View
+            android:layout_width="20pt"
+            android:layout_height="10pt"/>
+
+    </android.support.v7.widget.LinearLayoutCompat>
+
+    <android.support.v7.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content">
+
+        <View
+            android:layout_width="35pt"
+            android:layout_height="10pt"/>
+
+        <RatingBar
+            android:theme="@style/RatingBar"
+            android:id="@+id/ratingBar"
+            android:layout_width="wrap_content"
+            android:max="5"
+            android:scaleX=".7"
+            android:scaleY=".7"
+            android:layout_height="wrap_content" />
+
+        <View
+            android:layout_width="20pt"
+            android:layout_height="10pt"/>
+
+    </android.support.v7.widget.LinearLayoutCompat>
+
+
+    <android.support.v7.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content">
+
+        <View
+            android:layout_width="50pt"
+            android:layout_height="10pt"/>
+
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="80pt"
+            android:theme="@style/FeedbackButton"
+            android:layout_height="wrap_content"
+            android:text="Button" />
+
+        <View
+            android:layout_width="20pt"
+            android:layout_height="10pt"/>
+
+    </android.support.v7.widget.LinearLayoutCompat>
+
+
+</LinearLayout>

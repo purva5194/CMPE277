@@ -11,17 +11,17 @@ import android.view.ViewGroup;
  * Created by purvapatel on 4/12/17.
  */
 
-public class Share extends Fragment {
+public class Feedback extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return getActivity().getLayoutInflater().inflate(R.layout.activity_share, container , false);
+        return getActivity().getLayoutInflater().inflate(R.layout.activity_feedback, container , false);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        getActivity().setTitle("Share");
+        getActivity().setTitle("Feedback");
     }
 }
