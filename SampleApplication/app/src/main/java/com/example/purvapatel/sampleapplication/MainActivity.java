@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity
                 fragment = new Home();
                 break;
             case R.id.menu_setting:
-                fragment = new Setting();
+                fragment = new Profile();
                 break;
             case R.id.menu_chart:
                 fragment = new Chart();

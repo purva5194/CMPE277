@@ -1,9 +1,10 @@
 package com.example.purvapatel.sampleapplication;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.ShareCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,24 +14,25 @@ import android.widget.Button;
  * Created by purvapatel on 4/12/17.
  */
 
-public class Feedback extends Fragment {
+public class Profile extends Fragment {
 
-    Button submit;
+    private Button signOut;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = getActivity().getLayoutInflater().inflate(R.layout.activity_feedback, container , false);
+        View view = getActivity().getLayoutInflater().inflate(R.layout.activity_profile, container , false);
 
-        submit = (Button) view.findViewById(R.id.btnSubmit);
+        signOut = (Button) view.findViewById(R.id.button);
 
-        submit.setOnClickListener(new View.OnClickListener() {
+        signOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                Fragment fragmentFeedback = new Home();
-                FragmentTransaction ft =  getFragmentManager().beginTransaction();
-                ft.replace(R.id.content_main,fragmentFeedback);
-                ft.commit();
+                getActivity().finish();
+                Intent intent = new Intent(getActivity(), LoginActivity.class);
+                startActivity(intent);
+
             }
         });
         return view;
@@ -40,6 +42,6 @@ public class Feedback extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        getActivity().setTitle("Feedback");
+        getActivity().setTitle("Profile");
     }
 }

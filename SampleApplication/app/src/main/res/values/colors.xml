@@ -3,4 +3,10 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="iron">#CCCCCC</color>
+    <color name="white">#FFFFFF</color>
+    <color name="primary_darker">#571078</color>
+    <color name="accent">#FFFFFF</color>
+    <color name="primary_dark">#681092</color>
+    <color name="primary">#710F9F</color>
 </resources>

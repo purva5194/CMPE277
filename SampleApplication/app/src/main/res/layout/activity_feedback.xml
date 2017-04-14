@@ -179,11 +179,11 @@
             android:layout_height="10pt"/>
 
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/btnSubmit"
             android:layout_width="80pt"
             android:theme="@style/FeedbackButton"
             android:layout_height="wrap_content"
-            android:text="Button" />
+            android:text="Submit" />
 
         <View
             android:layout_width="20pt"
