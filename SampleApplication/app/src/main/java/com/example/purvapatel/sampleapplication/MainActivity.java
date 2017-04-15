@@ -23,6 +23,14 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //By default - home page
+        Fragment fragmentFeedback = new Home();
+        FragmentTransaction ft =  getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.content_main,fragmentFeedback);
+        ft.addToBackStack(null);
+        ft.commit();
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -31,10 +39,10 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View v) {
 
                 //feedback form
-
                 Fragment fragmentFeedback = new Feedback();
                 FragmentTransaction ft =  getSupportFragmentManager().beginTransaction();
                 ft.replace(R.id.content_main,fragmentFeedback);
+                ft.addToBackStack(null);
                 ft.commit();
             }
         });
@@ -49,7 +57,7 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
     }
 
-    @Override
+    /*@Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
@@ -57,7 +65,7 @@ public class MainActivity extends AppCompatActivity
         } else {
             super.onBackPressed();
         }
-    }
+    }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -75,6 +83,9 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            finish();
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(intent);
             return true;
         }
 
@@ -117,6 +128,7 @@ public class MainActivity extends AppCompatActivity
         {
             FragmentTransaction ft =  getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.content_main,fragment);
+            ft.addToBackStack(null);
             ft.commit();
         }
 
@@ -133,4 +145,14 @@ public class MainActivity extends AppCompatActivity
         displaySelectedScreen(id);
         return true;
     }
+
+    @Override
+    public void onBackPressed() {
+        if (getFragmentManager().getBackStackEntryCount() > 0) {
+            getFragmentManager().popBackStack();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
 }

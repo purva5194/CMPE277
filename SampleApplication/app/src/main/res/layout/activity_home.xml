@@ -67,7 +67,7 @@
             android:layout_width="100pt"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Temprature" />
+            android:text="Temperature" />
 
         <TextView
             android:layout_centerHorizontal="true"

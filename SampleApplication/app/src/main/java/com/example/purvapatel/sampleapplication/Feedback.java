@@ -30,6 +30,7 @@ public class Feedback extends Fragment {
                 Fragment fragmentFeedback = new Home();
                 FragmentTransaction ft =  getFragmentManager().beginTransaction();
                 ft.replace(R.id.content_main,fragmentFeedback);
+                ft.addToBackStack(null);
                 ft.commit();
             }
         });
