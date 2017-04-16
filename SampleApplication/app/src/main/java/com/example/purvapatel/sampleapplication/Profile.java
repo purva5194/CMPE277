@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 
 /**
  * Created by purvapatel on 4/12/17.
@@ -16,18 +17,31 @@ import android.widget.Button;
 
 public class Profile extends Fragment {
 
-    private Button signOut;
+    private Button update;
+    private EditText _firstnameText;
+    private EditText _lastnameText;
+    private EditText _emailText;
+    private EditText _passwordText;
+    private EditText _confirmpasswordText;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = getActivity().getLayoutInflater().inflate(R.layout.activity_profile, container , false);
 
-        signOut = (Button) view.findViewById(R.id.button);
+        update = (Button) view.findViewById(R.id.button);
+        _firstnameText = (EditText) view.findViewById(R.id.profile_firstname);
+        _lastnameText = (EditText) view.findViewById(R.id.profile_lastname);
+        _emailText = (EditText) view.findViewById(R.id.profile_email);
+        _passwordText = (EditText) view.findViewById(R.id.profile_password);
+        _confirmpasswordText = (EditText) view.findViewById(R.id.profile_confirmpassword);
 
-        signOut.setOnClickListener(new View.OnClickListener() {
+        update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+
+                // update query
 
                 getActivity().finish();
                 Intent intent = new Intent(getActivity(), LoginActivity.class);

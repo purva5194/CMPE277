@@ -41,6 +41,7 @@ public class Home extends Fragment {
             }
         });
 
+        //fetch data from the database
         return view;
 
         //return getActivity().getLayoutInflater().inflate(R.layout.activity_home, container , false);

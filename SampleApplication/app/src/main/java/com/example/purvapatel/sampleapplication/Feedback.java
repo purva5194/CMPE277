@@ -32,6 +32,9 @@ public class Feedback extends Fragment {
             @Override
             public void onClick(View v) {
 
+                // save data into database
+                //post query
+
                 Fragment fragmentFeedback = new Home();
                 FragmentTransaction ft =  getFragmentManager().beginTransaction();
                 ft.replace(R.id.content_main,fragmentFeedback);
