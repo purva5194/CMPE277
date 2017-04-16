@@ -4,8 +4,7 @@ package com.example.purvapatel.sampleapplication;
  * Created by purvapatel on 4/14/17.
  */
 
-
-        import android.app.ProgressDialog;
+      import android.app.ProgressDialog;
         import android.os.Bundle;
         import android.support.v7.app.AppCompatActivity;
         import android.util.Log;
@@ -16,8 +15,6 @@ package com.example.purvapatel.sampleapplication;
         import android.widget.EditText;
         import android.widget.TextView;
         import android.widget.Toast;
-
-        import org.w3c.dom.Text;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -34,8 +31,8 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        _emailText = (EditText) findViewById(R.id.input_email);
-        _passwordText = (EditText) findViewById(R.id.input_password);
+        _emailText = (EditText) findViewById(R.id.login_email);
+        _passwordText = (EditText) findViewById(R.id.login_password);
         _loginButton = (Button) findViewById(R.id.btn_login);
         _signupLink = (TextView) findViewById(R.id.link_signup);
 

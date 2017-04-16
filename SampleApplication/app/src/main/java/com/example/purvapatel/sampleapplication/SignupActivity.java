@@ -6,6 +6,7 @@ package com.example.purvapatel.sampleapplication;
 
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -19,9 +20,11 @@ import android.widget.Toast;
 public class SignupActivity extends AppCompatActivity {
     private static final String TAG = "SignupActivity";
 
-    private EditText _nameText;
+    private EditText _firstnameText;
+    private EditText _lastnameText;
     private EditText _emailText;
     private EditText _passwordText;
+    private EditText _confirmpasswordText;
     private Button _signupButton;
     private TextView _loginLink;
 
@@ -30,9 +33,11 @@ public class SignupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
-        _nameText = (EditText) findViewById(R.id.input_name);
+        _firstnameText = (EditText) findViewById(R.id.input_firstname);
+        _lastnameText = (EditText) findViewById(R.id.input_lastname);
         _emailText = (EditText) findViewById(R.id.input_email);
         _passwordText = (EditText) findViewById(R.id.input_password);
+        _confirmpasswordText = (EditText) findViewById(R.id.input_confirmpassword);
         _signupButton = (Button) findViewById(R.id.btn_signup);
         _loginLink = (TextView) findViewById(R.id.link_login);
 
@@ -68,7 +73,8 @@ public class SignupActivity extends AppCompatActivity {
         progressDialog.setMessage("Creating Account...");
         progressDialog.show();
 
-        String name = _nameText.getText().toString();
+        String firstname = _firstnameText.getText().toString();
+        String lastname = _lastnameText.getText().toString();
         String email = _emailText.getText().toString();
         String password = _passwordText.getText().toString();
 
@@ -91,6 +97,8 @@ public class SignupActivity extends AppCompatActivity {
         _signupButton.setEnabled(true);
         setResult(RESULT_OK, null);
         finish();
+        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+        startActivity(intent);
     }
 
     public void onSignupFailed() {
@@ -102,29 +110,58 @@ public class SignupActivity extends AppCompatActivity {
     public boolean validate() {
         boolean valid = true;
 
-        String name = _nameText.getText().toString();
+        String firstname = _firstnameText.getText().toString();
+        String lastname = _lastnameText.getText().toString();
         String email = _emailText.getText().toString();
         String password = _passwordText.getText().toString();
+        String confirmpassword = _confirmpasswordText.getText().toString();
 
-        if (name.isEmpty() || name.length() < 3) {
-            _nameText.setError("at least 3 characters");
+        if (firstname.isEmpty() || firstname.length() < 3) {
+            _firstnameText.setError("Please enter at least 3 characters");
             valid = false;
         } else {
-            _nameText.setError(null);
+            _firstnameText.setError(null);
+        }
+
+        if (lastname.isEmpty() || lastname.length() < 3) {
+            _lastnameText.setError("Please enter at least 3 characters");
+            valid = false;
+        } else {
+            _lastnameText.setError(null);
         }
 
         if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            _emailText.setError("enter a valid email address");
+            _emailText.setError("Please enter a valid email address");
             valid = false;
         } else {
             _emailText.setError(null);
         }
 
         if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
-            _passwordText.setError("between 4 and 10 alphanumeric characters");
+            if(password.length() < 4)
+                _passwordText.setError("Length should be > 4");
+            else if(password.length() > 10)
+                _passwordText.setError("Length should be < 10");
+            else
+                _passwordText.setError("Between 4 and 10 alphanumeric characters");
             valid = false;
         } else {
             _passwordText.setError(null);
+        }
+
+        if (confirmpassword.isEmpty() || confirmpassword.length() < 4 || confirmpassword.length() > 10) {
+            _confirmpasswordText.setError("Between 4 and 10 alphanumeric characters");
+            valid = false;
+        } else {
+            _confirmpasswordText.setError(null);
+        }
+
+        if(!password.equals(confirmpassword))
+        {
+            _confirmpasswordText.setError("Password do not match");
+            valid = false;
+        } else {
+            _confirmpasswordText.setError(null);
         }
 
         return valid;
