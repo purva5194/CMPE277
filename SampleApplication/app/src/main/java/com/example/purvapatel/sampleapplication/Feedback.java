@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 
 /**
  * Created by purvapatel on 4/12/17.
@@ -16,12 +17,16 @@ import android.widget.Button;
 public class Feedback extends Fragment {
 
     Button submit;
+    EditText sunlight, floor, place;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = getActivity().getLayoutInflater().inflate(R.layout.activity_feedback, container , false);
 
         submit = (Button) view.findViewById(R.id.btnSubmit);
+        sunlight = (EditText) view.findViewById(R.id.feedback_sunlight);
+        floor = (EditText) view.findViewById(R.id.feedback_floor);
+        place = (EditText)  view.findViewById(R.id.feedback_place);
 
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -41,6 +46,6 @@ public class Feedback extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        getActivity().setTitle("Feedback");
+        getActivity().setTitle("Survey");
     }
 }
