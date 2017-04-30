@@ -16,6 +16,21 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.purvapatel.sampleapplication.Supporting_Files.AppConfig;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.StringReader;
+
+import retrofit.Callback;
+import retrofit.RestAdapter;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+
 
 public class SignupActivity extends AppCompatActivity {
     private static final String TAG = "SignupActivity";
@@ -24,9 +39,11 @@ public class SignupActivity extends AppCompatActivity {
     private EditText _lastnameText;
     private EditText _emailText;
     private EditText _passwordText;
+    private EditText _address;
     private EditText _confirmpasswordText;
     private Button _signupButton;
     private TextView _loginLink;
+    String BASE_URL = "https://packers-backend.herokuapp.com";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -37,16 +54,10 @@ public class SignupActivity extends AppCompatActivity {
         _lastnameText = (EditText) findViewById(R.id.input_lastname);
         _emailText = (EditText) findViewById(R.id.input_email);
         _passwordText = (EditText) findViewById(R.id.input_password);
+        _address = (EditText) findViewById(R.id.input_address);
         _confirmpasswordText = (EditText) findViewById(R.id.input_confirmpassword);
         _signupButton = (Button) findViewById(R.id.btn_signup);
         _loginLink = (TextView) findViewById(R.id.link_login);
-
-        _signupButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                signup();
-            }
-        });
 
         _loginLink.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,52 +68,8 @@ public class SignupActivity extends AppCompatActivity {
         });
     }
 
-    public void signup() {
-        Log.d(TAG, "Signup");
-
-        if (!validate()) {
-            onSignupFailed();
-            return;
-        }
-
-        _signupButton.setEnabled(false);
-
-        final ProgressDialog progressDialog = new ProgressDialog(SignupActivity.this,
-                R.style.AppTheme_Dark_Dialog);
-        progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("Creating Account...");
-        progressDialog.show();
-
-        String firstname = _firstnameText.getText().toString();
-        String lastname = _lastnameText.getText().toString();
-        String email = _emailText.getText().toString();
-        String password = _passwordText.getText().toString();
-
-        // TODO: Implement your own signup logic here.
-
-        new android.os.Handler().postDelayed(
-                new Runnable() {
-                    public void run() {
-                        // On complete call either onSignupSuccess or onSignupFailed
-                        // depending on success
-                        onSignupSuccess();
-                        // onSignupFailed();
-                        progressDialog.dismiss();
-                    }
-                }, 3000);
-    }
-
-
-    public void onSignupSuccess() {
-        _signupButton.setEnabled(true);
-        setResult(RESULT_OK, null);
-        finish();
-        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-        startActivity(intent);
-    }
-
     public void onSignupFailed() {
-        Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
+        Toast.makeText(getBaseContext(), "By Product failed", Toast.LENGTH_LONG).show();
 
         _signupButton.setEnabled(true);
     }
@@ -115,7 +82,9 @@ public class SignupActivity extends AppCompatActivity {
         String email = _emailText.getText().toString();
         String password = _passwordText.getText().toString();
         String confirmpassword = _confirmpasswordText.getText().toString();
+        String address = _address.getText().toString();
 
+        //validation for first name
         if (firstname.isEmpty() || firstname.length() < 3) {
             _firstnameText.setError("Please enter at least 3 characters");
             valid = false;
@@ -123,6 +92,7 @@ public class SignupActivity extends AppCompatActivity {
             _firstnameText.setError(null);
         }
 
+        //validation for last name
         if (lastname.isEmpty() || lastname.length() < 3) {
             _lastnameText.setError("Please enter at least 3 characters");
             valid = false;
@@ -130,6 +100,15 @@ public class SignupActivity extends AppCompatActivity {
             _lastnameText.setError(null);
         }
 
+        //validation for address
+        if (address.isEmpty()) {
+            _address.setError("Please enter an address");
+            valid = false;
+        } else {
+            _address.setError(null);
+        }
+
+        //validation for email address
         if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             _emailText.setError("Please enter a valid email address");
             valid = false;
@@ -137,6 +116,7 @@ public class SignupActivity extends AppCompatActivity {
             _emailText.setError(null);
         }
 
+        //validation for password
         if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
             if(password.length() < 4)
                 _passwordText.setError("Length should be > 4");
@@ -149,6 +129,7 @@ public class SignupActivity extends AppCompatActivity {
             _passwordText.setError(null);
         }
 
+        //validation for confirm password
         if (confirmpassword.isEmpty() || confirmpassword.length() < 4 || confirmpassword.length() > 10) {
             _confirmpasswordText.setError("Between 4 and 10 alphanumeric characters");
             valid = false;
@@ -156,6 +137,7 @@ public class SignupActivity extends AppCompatActivity {
             _confirmpasswordText.setError(null);
         }
 
+        //validation for same password and confirm password
         if(!password.equals(confirmpassword))
         {
             _confirmpasswordText.setError("Password do not match");
@@ -165,5 +147,64 @@ public class SignupActivity extends AppCompatActivity {
         }
 
         return valid;
+    }
+
+
+    //handles onclik event of Create Account Button
+    public void onBuyProduct(View v){
+
+        if (!validate()) {
+            onSignupFailed();
+            return;
+        }
+
+        RestAdapter adapter = new RestAdapter.Builder()
+                .setEndpoint(BASE_URL) //Setting the Root URL
+                .build();
+
+        AppConfig.signup api = adapter.create(AppConfig.signup.class);
+        api.buyproduct(
+                _firstnameText.getText().toString(),
+                _lastnameText.getText().toString(),
+                _address.getText().toString(),
+                _emailText.getText().toString(),
+                _passwordText.getText().toString(),
+                new Callback<Response>() {
+                    @Override
+                    public void success(Response result, Response response) {
+
+                        try {
+
+                            BufferedReader reader = new BufferedReader(new InputStreamReader(result.getBody().in()));
+                            String resp;
+                            resp = reader.readLine();
+                            Log.d("success", "" + resp);
+
+                            JSONObject jObj = new JSONObject(resp);
+                            int success = jObj.getInt("success");
+
+                            if(success == 1){
+                                Toast.makeText(getApplicationContext(), "Buy Product Successful, Please Log in", Toast.LENGTH_SHORT).show();;
+                                Intent intent = new Intent();
+                                intent.setClass(SignupActivity.this, LoginActivity.class);
+                                startActivity(intent);
+                            } else{
+                                Toast.makeText(getApplicationContext(), "Buy Product Fail", Toast.LENGTH_SHORT).show();
+                            }
+
+
+                        } catch (IOException e) {
+                            Log.d("Exception", e.toString());
+                        } catch (JSONException e) {
+                            Log.d("JsonException", e.toString());
+                        }
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        Toast.makeText(SignupActivity.this, error.toString(), Toast.LENGTH_LONG).show();
+                    }
+                }
+        );
     }
 }

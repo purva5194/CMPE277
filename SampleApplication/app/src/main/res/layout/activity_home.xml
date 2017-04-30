@@ -39,8 +39,8 @@
             android:background="@drawable/toggle_selector"
             android:checked="false"
             android:text=""
-            android:textOff=""
-            android:textOn="" />
+            android:textOff="false"
+            android:textOn="true" />
 
         <View
             android:layout_width="25pt"

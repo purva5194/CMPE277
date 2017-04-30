@@ -16,6 +16,20 @@ package com.example.purvapatel.sampleapplication;
         import android.widget.TextView;
         import android.widget.Toast;
 
+      import com.example.purvapatel.sampleapplication.Supporting_Files.AppConfig;
+
+      import org.json.JSONException;
+      import org.json.JSONObject;
+
+      import java.io.BufferedReader;
+      import java.io.IOException;
+      import java.io.InputStreamReader;
+
+      import retrofit.Callback;
+      import retrofit.RestAdapter;
+      import retrofit.RetrofitError;
+      import retrofit.client.Response;
+
 
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
@@ -25,6 +39,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText _passwordText;
     private Button _loginButton;
     private TextView _signupLink;
+    String BASE_URL = "https://packers-backend.herokuapp.com";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -36,64 +51,17 @@ public class LoginActivity extends AppCompatActivity {
         _loginButton = (Button) findViewById(R.id.btn_login);
         _signupLink = (TextView) findViewById(R.id.link_signup);
 
-        _loginButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                login();
-            }
-        });
-
         _signupLink.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 // Start the Signup activity
 
-                //check username and password
-
                 Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
                 startActivityForResult(intent, REQUEST_SIGNUP);
             }
         });
     }
-
-    public void login() {
-        Log.d(TAG, "Login");
-
-        if (!validate()) {
-            onLoginFailed();
-            return;
-        }
-
-        _loginButton.setEnabled(false);
-
-        final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this,
-                R.style.AppTheme_Dark_Dialog);
-        progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("Authenticating...");
-        progressDialog.show();
-
-        String email = _emailText.getText().toString();
-        String password = _passwordText.getText().toString();
-
-        // TODO: Implement your own authentication logic here.
-
-        new android.os.Handler().postDelayed(
-                new Runnable() {
-                    public void run() {
-                        // On complete call either onLoginSuccess or onLoginFailed
-                        onLoginSuccess();
-                        // onLoginFailed();
-                        progressDialog.dismiss();
-                    }
-                }, 3000);
-
-        //please write here login conditions
-        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-        startActivity(intent);
-    }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -111,11 +79,6 @@ public class LoginActivity extends AppCompatActivity {
     public void onBackPressed() {
         // disable going back to the MainActivity
         moveTaskToBack(true);
-    }
-
-    public void onLoginSuccess() {
-        _loginButton.setEnabled(true);
-        finish();
     }
 
     public void onLoginFailed() {
@@ -145,5 +108,67 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         return valid;
+    }
+
+    //handles onClick event of Login Button
+    //for checking password and username into database using REST APIs
+    public void onLogin(View v){
+
+        if (!validate()) {
+            onLoginFailed();
+            return;
+        }
+
+        RestAdapter adapter = new RestAdapter.Builder()
+                .setEndpoint(BASE_URL) //Setting the Root URL
+                .build();
+
+        AppConfig.signin api = adapter.create(AppConfig.signin.class);
+
+        Log.d("email", _emailText.getText().toString());
+        Log.d("password", _passwordText.getText().toString());
+        api.login(
+                _emailText.getText().toString(),
+                _passwordText.getText().toString(),
+                new Callback<Response>() {
+                    @Override
+                    public void success(Response result, Response response) {
+
+                        try {
+
+                            BufferedReader reader = new BufferedReader(new InputStreamReader(result.getBody().in()));
+                            String resp;
+                            resp = reader.readLine();
+                            Log.d("success", "" + resp);
+
+                            JSONObject jObj = new JSONObject(resp);
+                            int success = jObj.getInt("success");
+
+                            if(success == 1){
+                                Toast.makeText(getApplicationContext(), "Log in Successful", Toast.LENGTH_SHORT).show();
+                                String token = jObj.getString("token");
+                                Intent intent = new Intent();
+                                intent.setClass(LoginActivity.this, MainActivity.class);
+                                intent.putExtra("token", token);
+                                startActivity(intent);
+                            } else{
+                                Toast.makeText(getApplicationContext(), "Log in Fail", Toast.LENGTH_SHORT).show();
+                            }
+
+
+                        } catch (IOException e) {
+                            Log.d("Exception", e.toString());
+                        } catch (JSONException e) {
+                            Log.d("JsonException", e.toString());
+                        }
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        Toast.makeText(LoginActivity.this, "Invalid Usename or Password", Toast.LENGTH_LONG).show();
+                    }
+                }
+        );
+
     }
 }
