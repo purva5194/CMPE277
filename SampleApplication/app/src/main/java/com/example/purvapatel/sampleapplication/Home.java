@@ -45,7 +45,6 @@ public class Home extends Fragment {
     ToggleButton toggleButton;
     TextView temperature, brightness, motion;
     String token;
-    Boolean led;
     String BASE_URL = "https://packers-backend.herokuapp.com";
     public MyTask myTask;
     @Nullable
@@ -62,18 +61,8 @@ public class Home extends Fragment {
         toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
             @Override
-            public void onCheckedChanged(CompoundButton arg0, boolean isChecked) {
-                //text.setText("Status: " + isChecked);
+            public void onCheckedChanged(CompoundButton arg0, final boolean isChecked) {
 
-                //test
-                if (toggleButton.isChecked()) {
-                    led = Boolean.valueOf(toggleButton.getTextOn().toString());
-                    android.util.Log.d("led", String.valueOf(led));
-                }
-                else {
-                    led = Boolean.valueOf(toggleButton.getTextOff().toString());
-                    android.util.Log.d("led", String.valueOf(led));
-                }
                 RestAdapter adapter = new RestAdapter.Builder()
                         .setEndpoint(BASE_URL) //Setting the Root URL
                         .build();
@@ -81,7 +70,7 @@ public class Home extends Fragment {
                 AppConfig.led api = adapter.create(AppConfig.led.class);
                 api.ledData(
                         token,
-                        led,
+                        isChecked,
                         new Callback<Response>() {
                             @Override
                             public void success(Response result, Response response) {
@@ -97,7 +86,7 @@ public class Home extends Fragment {
                                     int success = jObj.getInt("success");
 
                                     if(success == 1){
-                                        Toast.makeText(getActivity(), "led is "+led, Toast.LENGTH_SHORT).show();;
+                                        Toast.makeText(getActivity(), "led is "+isChecked, Toast.LENGTH_SHORT).show();;
                                     } else{
                                         Toast.makeText(getActivity(), "error", Toast.LENGTH_SHORT).show();
                                     }
@@ -147,66 +136,48 @@ public class Home extends Fragment {
         handler.postDelayed(runnable, 1000);
     }
 
-    /*public void ledSwtich(View v){
-
-        if (toggleButton.isChecked()) {
-            led = Boolean.valueOf(toggleButton.getTextOn().toString());
-            android.util.Log.d("led", String.valueOf(led));
-        }
-        else {
-            led = Boolean.valueOf(toggleButton.getTextOff().toString());
-            android.util.Log.d("led", String.valueOf(led));
-        }
-        RestAdapter adapter = new RestAdapter.Builder()
-                .setEndpoint(BASE_URL) //Setting the Root URL
-                .build();
-
-        AppConfig.led api = adapter.create(AppConfig.led.class);
-        api.ledData(
-                token,
-                led,
-                new Callback<Response>() {
-                    @Override
-                    public void success(Response result, Response response) {
-
-                        try {
-
-                            BufferedReader reader = new BufferedReader(new InputStreamReader(result.getBody().in()));
-                            String resp;
-                            resp = reader.readLine();
-                            android.util.Log.d("success", "" + resp);
-
-                            JSONObject jObj = new JSONObject(resp);
-                            int success = jObj.getInt("success");
-
-                            if(success == 1){
-                                Toast.makeText(getActivity(), "led is "+led, Toast.LENGTH_SHORT).show();;
-                            } else{
-                                Toast.makeText(getActivity(), "error", Toast.LENGTH_SHORT).show();
-                            }
-
-
-                        } catch (IOException e) {
-                            android.util.Log.d("Exception", e.toString());
-                        } catch (JSONException e) {
-                            Log.d("JsonException", e.toString());
-                        }
-                    }
-
-                    @Override
-                    public void failure(RetrofitError error) {
-                        Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_LONG).show();
-                    }
-                }
-        );
-
-    }*/
-
     public void sensorValues(){
         RestAdapter adapter = new RestAdapter.Builder()
                 .setEndpoint(BASE_URL) //Setting the Root URL
                 .build();
+        AppConfig.ledData LEDapi = adapter.create(AppConfig.ledData.class);
 
+        //for status of LED light
+        LEDapi.ledStatus(new Callback<Response>() {
+                             @Override
+                             public void success(Response result, Response response) {
+
+                                 try {
+
+                                     BufferedReader reader = new BufferedReader(new InputStreamReader(result.getBody().in()));
+                                     String resp;
+                                     resp = reader.readLine();
+                                     android.util.Log.d("success", "" + resp);
+
+                                     JSONObject jObj = new JSONObject(resp);
+                                     boolean ledStatus = jObj.getBoolean("led");
+
+                                     if(ledStatus)
+                                         toggleButton.setChecked(true);
+                                     else
+                                         toggleButton.setChecked(false);
+
+
+                                 } catch (IOException e) {
+                                     android.util.Log.d("Exception", e.toString());
+                                 } catch (JSONException e) {
+                                     android.util.Log.d("JsonException", e.toString());
+                                 }
+                             }
+
+                             @Override
+                             public void failure(RetrofitError error) {
+                                 Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_LONG).show();
+                             }
+                         }
+        );
+
+        //for set sensor data (temperature, motion, brightness) into textview
         AppConfig.sensor api = adapter.create(AppConfig.sensor.class);
         api.sensorData(new Callback<Response>() {
                            @Override
@@ -255,5 +226,6 @@ public class Home extends Fragment {
                            }
                        }
         );
+
     }
 }

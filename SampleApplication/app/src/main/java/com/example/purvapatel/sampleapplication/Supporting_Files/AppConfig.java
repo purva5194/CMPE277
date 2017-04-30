@@ -52,6 +52,7 @@ public class AppConfig {
     public interface sensor {
         @GET("/latest_sensor_data")
         void sensorData(Callback<Response> callback);
+
     }
 
     public interface notification {
@@ -59,5 +60,9 @@ public class AppConfig {
         void notificationData(Callback<Response> callback);
     }
 
+    public interface ledData {
+        @GET("/led_data")
+        void ledStatus(Callback<Response> callback);
+    }
 
 }
