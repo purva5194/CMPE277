@@ -1,207 +1,151 @@
 package com.example.purvapatel.sampleapplication;
 
-import org.achartengine.ChartFactory;
-import org.achartengine.chart.PointStyle;
-import org.achartengine.model.XYMultipleSeriesDataset;
-import org.achartengine.model.XYSeries;
-import org.achartengine.renderer.BasicStroke;
-import org.achartengine.renderer.XYMultipleSeriesRenderer;
-import org.achartengine.renderer.XYSeriesRenderer;
+    import java.io.BufferedReader;
+    import java.io.IOException;
+    import java.io.InputStreamReader;
+    import java.util.Random;
 
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Typeface;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.LinearLayout;
+    import android.graphics.Color;
+    import android.os.Bundle;
+    import android.support.v7.app.AppCompatActivity;
+    import android.widget.Toast;
 
-/**
- * Created by purvapatel on 4/12/17.
- */
+    import com.example.purvapatel.sampleapplication.Supporting_Files.AppConfig;
+    import com.jjoe64.graphview.GraphView;
+    import com.jjoe64.graphview.Viewport;
+    import com.jjoe64.graphview.series.DataPoint;
+    import com.jjoe64.graphview.series.LineGraphSeries;
 
-public class Chart extends Fragment {
+    import org.json.JSONArray;
+    import org.json.JSONException;
+    import org.json.JSONObject;
 
-    private View mChart;
-    private LinearLayout chartContainer;
+    import retrofit.RetrofitError;
+    import retrofit.client.Response;
+    import retrofit.Callback;
+    import retrofit.RestAdapter;
 
-    private String[] mMinutes = new String[] {"1", "2" , "3", "4", "5", "6", "7", "8" , "9", "10"};
+public class Chart extends AppCompatActivity {
 
-    @Nullable
+    private LineGraphSeries<DataPoint> series;
+    private LineGraphSeries<DataPoint> series2;
+    private int lastX = 0;
+    String BASE_URL = "https://packers-backend.herokuapp.com";
+    public String b1 = "";
+    public String m1 ="";
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = getActivity().getLayoutInflater().inflate(R.layout.activity_chart, container , false);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_chart);
+        // we get graph view instance
+        GraphView graph = (GraphView) findViewById(R.id.graph);
+        graph.getGridLabelRenderer().setVerticalAxisTitle("Match Value");
+        graph.getGridLabelRenderer().setHorizontalAxisTitle("Time/s");
+        // data
+        series = new LineGraphSeries<DataPoint>();
+        series.setColor(Color.RED);
+        series.setTitle("Motion");
+        series.setThickness(8);
 
-        // Getting reference to the button btn_chart
-        Button btnChart = (Button) view.findViewById(R.id.btn_chart);
+        series2 = new LineGraphSeries<DataPoint>();
+        series2.setThickness(8);
+        series2.setTitle("Brightness");
 
+        graph.addSeries(series);
+        graph.addSeries(series2);
 
-        //this part is used to display graph on the xml
-        chartContainer = (LinearLayout) view.findViewById(R.id.chart);
+        // customize a little bit viewport
+        Viewport viewport = graph.getViewport();
+        viewport.setYAxisBoundsManual(true);
+        viewport.setMinY(0);
+        viewport.setMaxY(100);
+        viewport.setScrollable(true);
+    }
 
-        // Defining click event listener for the button btn_chart
-        View.OnClickListener clickListener = new View.OnClickListener() {
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // we're going to simulate real time with thread that append data to the graph
+        new Thread(new Runnable() {
 
             @Override
-            public void onClick(View v) {
-            // Draw the Income vs Expense Chart
-                openChart();
+            public void run() {
+                // we add 100 new entries
+                for (int i = 0; i < 100; i++) {
+                    runOnUiThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            addEntry();
+                        }
+                    });
+
+                    // sleep to slow down the add of entries
+                    try {
+                        Thread.sleep(600);
+                    } catch (InterruptedException e) {
+                        // manage error ...
+                    }
+                }
             }
-        };
-
-        // Setting event click listener for the button btn_chart of the MainActivity layout
-        btnChart.setOnClickListener(clickListener);
-
-        return view;
-
+        }).start();
     }
 
-    private void openChart(){
-                int[] x = { 0,1,2,3,4,5,6,7, 8, 9};
-                int[] temperature = { 20,25,27,30,28,50,70,60,45,30};
-                int[] motion = {30, 27, 22, 28, 26, 30, 33, 50, 60, 70,};
+    // add random data to graph
+    private void addEntry() {
+        // here, we choose to display max 10 points on the viewport and we scroll to end
 
-        // Creating an XYSeries for Income
-                XYSeries incomeSeries = new XYSeries("Temperature");
-        // Creating an XYSeries for Expense
-                XYSeries expenseSeries = new XYSeries("Motion");
-        // Adding data to Income and Expense Series
-                for(int i=0;i<x.length;i++){
-                    incomeSeries.add(i,temperature[i]);
-                    expenseSeries.add(i,motion[i]);
+        RestAdapter adapter = new RestAdapter.Builder()
+                .setEndpoint(BASE_URL) //Setting the Root URL
+                .build();
+
+        AppConfig.sensor api = adapter.create(AppConfig.sensor.class);
+        api.sensorData(new Callback<Response>() {
+            @Override
+            public void success(Response result, Response response) {
+
+                try {
+
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(result.getBody().in()));
+                    String resp;
+                    resp = reader.readLine();
+                    android.util.Log.d("success", "" + resp);
+
+                    JSONObject jObj = new JSONObject(resp);
+                    int success = jObj.getInt("success");
+
+                    if (success == 1) {
+                        //Toast.makeText(getApplicationContext(), "led is "+led, Toast.LENGTH_SHORT).show();;
+
+                        JSONArray obj = jObj.getJSONArray("obj");
+                        JSONObject values = (JSONObject) obj.get(0);
+                        b1 = values.getString("brightness");
+                        m1 = values.getString("motion");
+                        android.util.Log.d("brightness--------", ""+ b1);
+
+                        lastX++;
+                        series.appendData(new DataPoint(lastX, Double.parseDouble(m1)/10d), true, 100);
+                        series2.appendData(new DataPoint(lastX, Double.parseDouble(b1)), true, 100);
+
+
+                    } else {
+                        Toast.makeText(getApplicationContext(), "error", Toast.LENGTH_SHORT).show();
+                    }
+
+
+                } catch (IOException e) {
+                    android.util.Log.d("Exception", e.toString());
+                } catch (JSONException e) {
+                    android.util.Log.d("JsonException", e.toString());
                 }
+            }
 
-        // Creating a dataset to hold each series
-                XYMultipleSeriesDataset dataset = new XYMultipleSeriesDataset();
-        // Adding Income Series to the dataset
-                dataset.addSeries(incomeSeries);
-        // Adding Expense Series to dataset
-                dataset.addSeries(expenseSeries);
-
-        // Creating XYSeriesRenderer to customize incomeSeries
-                XYSeriesRenderer incomeRenderer = new XYSeriesRenderer();
-                incomeRenderer.setColor(Color.CYAN); //color of the graph set to cyan
-                incomeRenderer.setFillPoints(true);
-                incomeRenderer.setLineWidth(2f);
-                incomeRenderer.setDisplayChartValues(true);
-        //setting chart value distance
-                incomeRenderer.setDisplayChartValuesDistance(10);
-        //setting line graph point style to circle
-                incomeRenderer.setPointStyle(PointStyle.CIRCLE);
-        //setting stroke of the line chart to solid
-                incomeRenderer.setStroke(BasicStroke.SOLID);
-
-        // Creating XYSeriesRenderer to customize expenseSeries
-                XYSeriesRenderer expenseRenderer = new XYSeriesRenderer();
-                expenseRenderer.setColor(Color.RED);
-                expenseRenderer.setFillPoints(true);
-                expenseRenderer.setLineWidth(2f);
-                expenseRenderer.setDisplayChartValues(true);
-        //setting line graph point style to circle
-                expenseRenderer.setPointStyle(PointStyle.SQUARE);
-        //setting stroke of the line chart to solid
-                expenseRenderer.setStroke(BasicStroke.SOLID);
-
-        // Creating a XYMultipleSeriesRenderer to customize the whole chart
-                XYMultipleSeriesRenderer multiRenderer = new XYMultipleSeriesRenderer();
-                multiRenderer.setXLabels(0);
-                multiRenderer.setChartTitle("");
-                multiRenderer.setXTitle("Minutes");
-                multiRenderer.setYTitle("Temperature in C");
-
-        /***
-         * Customizing graphs
-         */
-        //setting text size of the title
-                multiRenderer.setChartTitleTextSize(28);
-        //setting text size of the axis title
-                multiRenderer.setAxisTitleTextSize(28);
-        //setting text size of the graph lable
-                multiRenderer.setLabelsTextSize(28);
-        //setting zoom buttons visiblity
-                multiRenderer.setZoomButtonsVisible(false);
-        //setting pan enablity which uses graph to move on both axis
-                multiRenderer.setPanEnabled(false, false);
-        //setting click false on graph
-                multiRenderer.setClickEnabled(false);
-        //setting zoom to false on both axis
-                multiRenderer.setZoomEnabled(false, false);
-        //setting lines to display on y axis
-                multiRenderer.setShowGridY(true);
-        //setting lines to display on x axis
-                multiRenderer.setShowGridX(true);
-        //setting legend to fit the screen size
-                multiRenderer.setFitLegend(true);
-        //setting displaying line on grid
-                multiRenderer.setShowGrid(true);
-        //setting zoom to false
-                multiRenderer.setZoomEnabled(false);
-        //setting external zoom functions to false
-                multiRenderer.setExternalZoomEnabled(false);
-        //setting displaying lines on graph to be formatted(like using graphics)
-                multiRenderer.setAntialiasing(true);
-        //setting to in scroll to false
-                multiRenderer.setInScroll(false);
-        //setting to set legend height of the graph
-                multiRenderer.setLegendHeight(30);
-        //setting x axis label align
-                multiRenderer.setXLabelsAlign(Paint.Align.CENTER);
-        //setting y axis label to align
-                multiRenderer.setYLabelsAlign(Paint.Align.LEFT);
-        //setting text style
-                multiRenderer.setTextTypeface("sans_serif", Typeface.NORMAL);
-        //setting no of values to display in y axis
-                multiRenderer.setYLabels(11);
-        // setting y axis max value, Since i'm using static values inside the graph so i'm setting y max value to 100.
-        // if you use dynamic values then get the max y value and set here
-                multiRenderer.setYAxisMax(100);
-                multiRenderer.setYAxisMin(0);
-        //setting used to move the graph on xaxiz to .5 to the right
-                multiRenderer.setXAxisMin(0);
-        //setting used to move the graph on xaxiz to .5 to the right
-                multiRenderer.setXAxisMax(11);
-        //setting bar size or space between two bars
-        //multiRenderer.setBarSpacing(0.5);
-        //Setting background color of the graph to transparent
-                multiRenderer.setBackgroundColor(Color.TRANSPARENT);
-        //Setting margin color of the graph to transparent
-                multiRenderer.setMarginsColor(getResources().getColor(R.color.transparent_background));
-                multiRenderer.setApplyBackgroundColor(true);
-                multiRenderer.setScale(2f);
-        //setting x axis point size
-                multiRenderer.setPointSize(4f);
-        //setting the margin size for the graph in the order top, left, bottom, right
-                multiRenderer.setMargins(new int[]{50, 80, 50, 80});
-
-                for(int i=0; i< x.length;i++){
-                    multiRenderer.addXTextLabel(i, mMinutes[i]);
-                }
-
-        // Adding incomeRenderer and expenseRenderer to multipleRenderer
-        // Note: The order of adding dataseries to dataset and renderers to multipleRenderer
-        // should be same
-                multiRenderer.addSeriesRenderer(incomeRenderer);
-                multiRenderer.addSeriesRenderer(expenseRenderer);
-
-        //remove any views before u paint the chart
-                chartContainer.removeAllViews();
-        //drawing bar chart
-                mChart = ChartFactory.getLineChartView(getActivity(), dataset, multiRenderer);
-        //adding the view to the linearlayout
-                chartContainer.addView(mChart);
+            @Override
+            public void failure(RetrofitError error) {
+                Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
+            }}
+        );
 
     }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        getActivity().setTitle("Chart");
-    }
-
 
 }

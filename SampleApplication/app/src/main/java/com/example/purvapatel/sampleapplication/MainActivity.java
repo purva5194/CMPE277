@@ -105,7 +105,8 @@ public class MainActivity extends AppCompatActivity
                 fragment = new Profile();
                 break;
             case R.id.menu_chart:
-                fragment = new Chart();
+                Intent i = new Intent(getApplicationContext() , Chart.class);
+                startActivity(i);
                 break;
             case R.id.menu_share:
                 Intent intent = new Intent(android.content.Intent.ACTION_SEND);
