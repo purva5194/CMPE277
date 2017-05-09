@@ -116,12 +116,12 @@ public class MainActivity extends AppCompatActivity
                 intent.putExtra(android.content.Intent.EXTRA_TEXT, shareBodyText);
                 startActivity(Intent.createChooser(intent, "Choose sharing method"));
                 break;
-            case R.id.menu_log:
+           /* case R.id.menu_log:
                 fragment = new Log();
                 break;
             case R.id.menu_notification:
                 fragment = new Notification();
-                break;
+                break;*/
 
         }
 

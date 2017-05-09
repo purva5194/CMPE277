@@ -10,14 +10,14 @@
             android:id="@+id/menu_chart"
             android:icon="@drawable/ic_menu_chart"
             android:title="Chart" />
-        <item
+        <!--<item
             android:id="@+id/menu_notification"
             android:icon="@drawable/ic_menu_notification"
             android:title="Notification" />
         <item
             android:id="@+id/menu_log"
             android:icon="@drawable/ic_menu_log"
-            android:title="Logs" />
+            android:title="Logs" />-->
         <item
             android:id="@+id/menu_setting"
             android:icon="@drawable/ic_menu_user"
