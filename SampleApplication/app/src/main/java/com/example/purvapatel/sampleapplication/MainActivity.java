@@ -122,6 +122,9 @@ public class MainActivity extends AppCompatActivity
             case R.id.menu_notification:
                 fragment = new Notification();
                 break;*/
+            case R.id.menu_about_us:
+                fragment = new AboutUs();
+                break;
 
         }
 
